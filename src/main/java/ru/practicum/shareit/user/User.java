@@ -16,9 +16,9 @@ public class User extends Entity {
 
     private long id;
 
-    private long name;
+    private String name;
 
     @Email
     @NotBlank
-    private long email;
+    private String email;
 }
