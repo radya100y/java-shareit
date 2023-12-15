@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.AlreadyExistException;
 import ru.practicum.shareit.NotFoundException;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class UserStorageRam implements UserStorage {
 
     @Override
     public User save(User user) {
+        if (!validate(user)) throw new AlreadyExistException("Email " + user.getEmail() + " already exists");
         user.setId(++id);
         users.add(user);
         return user;
@@ -33,10 +35,11 @@ public class UserStorageRam implements UserStorage {
 
     @Override
     public User update(User user) {
+        if (!validate(user)) throw new AlreadyExistException("Email " + user.getEmail() + " already exists");
         for (User userFind : users) {
             if (userFind.getId() == user.getId()) {
-                if (!user.getName().isBlank()) userFind.setName(user.getName());
-                if (!user.getEmail().isBlank()) userFind.setEmail(user.getEmail());
+                if (user.getName() != null) userFind.setName(user.getName());
+                if (user.getEmail() != null) userFind.setEmail(user.getEmail());
                 return userFind;
             }
         }
@@ -57,5 +60,13 @@ public class UserStorageRam implements UserStorage {
     @Override
     public List<User> getAll() {
         return users;
+    }
+
+    public boolean validate(User user) { // При размещении данных в БД - вынести проверку уникальности на constraint
+        if (user.getEmail() == null) return true;
+        for (User userFind : users) {
+            if ((user.getEmail().equals(userFind.getEmail())) && (user.getId() != userFind.getId())) return false;
+        }
+        return true;
     }
 }
