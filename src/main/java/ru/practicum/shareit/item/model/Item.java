@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import ru.practicum.shareit.Entity;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -11,8 +8,9 @@ import javax.validation.constraints.NotNull;
  * TODO Sprint add-controllers.
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class Item extends Entity {
+public class Item {
+
+    private long id;
 
     @NotBlank
     private String name;

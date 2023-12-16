@@ -1,17 +1,18 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import ru.practicum.shareit.Entity;
-
+import lombok.experimental.SuperBuilder;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * TODO Sprint add-controllers.
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class ItemDto extends Entity {
+@SuperBuilder
+public class ItemDto {
+
+    private long id;
 
     @NotBlank
     private String name;
@@ -19,5 +20,9 @@ public class ItemDto extends Entity {
     @NotBlank
     private String description;
 
-    private long bookingQty;
+    @NotNull
+    private Boolean available;
+
+    @NotNull
+    private long owner;
 }
