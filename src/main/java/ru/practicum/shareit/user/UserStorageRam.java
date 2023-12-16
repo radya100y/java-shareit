@@ -19,6 +19,7 @@ public class UserStorageRam implements UserStorage {
 
     @Override
     public User save(User user) {
+
         validateEmail(user);
         user.setId(++id);
         users.add(user);
@@ -27,6 +28,7 @@ public class UserStorageRam implements UserStorage {
 
     @Override
     public User get(long id) {
+
         for (User user : users) {
             if (user.getId() == id) return user;
         }
@@ -35,6 +37,7 @@ public class UserStorageRam implements UserStorage {
 
     @Override
     public User update(User user) {
+
         validateEmail(user);
         User userFind = get(user.getId());
         if (user.getName() != null) userFind.setName(user.getName());
@@ -44,6 +47,7 @@ public class UserStorageRam implements UserStorage {
 
     @Override
     public void delete(long id) {
+
         users.remove(get(id));
     }
 
