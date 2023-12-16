@@ -1,8 +1,11 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -13,23 +16,25 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User save(User user) {
-        return userStorage.save(user);
+    public UserDto save(User user) {
+        return UserMapper.toUserDto(userStorage.save(user));
     }
 
-    public User get(Long id) {
-        return userStorage.get(id);
+    public UserDto get(Long id) {
+        return UserMapper.toUserDto(userStorage.get(id));
     }
 
-    public User update(User user) {
-        return userStorage.update(user);
+    public UserDto update(User user) {
+        return UserMapper.toUserDto(userStorage.update(user));
     }
 
     public void delete(long id) {
         userStorage.delete(id);
     }
 
-    public List<User> getAll() {
-        return userStorage.getAll();
+    public List<UserDto> getAll() {
+        return userStorage.getAll().stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 }

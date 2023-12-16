@@ -1,11 +1,10 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -22,17 +21,17 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public Item get(@PathVariable("id") long id) {
+    public ItemDto get(@PathVariable("id") long id) {
         return itemService.get(id);
     }
 
     @PostMapping()
-    public Item save(@Valid @RequestBody Item item, @RequestHeader("X-Sharer-User-Id") long userId) {
+    public ItemDto save(@Valid @RequestBody Item item, @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.save(item, userId);
     }
 
     @PatchMapping("/{id}")
-    public Item update(@RequestBody Item item, @RequestHeader("X-Sharer-User-Id") long userId, @PathVariable("id") long itemId) {
+    public ItemDto update(@RequestBody Item item, @RequestHeader("X-Sharer-User-Id") long userId, @PathVariable("id") long itemId) {
         item.setId(itemId);
         return itemService.update(item, userId);
     }
@@ -43,12 +42,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<Item> getAll(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.getAll(userId);
     }
 
     @GetMapping("/search")
-    public List<Item> search(@RequestParam String text) {
+    public List<ItemDto> search(@RequestParam String text) {
         return itemService.search(text);
     }
 }

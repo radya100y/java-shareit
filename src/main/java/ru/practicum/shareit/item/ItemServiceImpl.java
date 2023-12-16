@@ -2,10 +2,13 @@ package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.AccessException;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserStorage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -20,23 +23,23 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public Item save(Item item, long userId) {
+    public ItemDto save(Item item, long userId) {
         userStorage.get(userId);
         item.setOwner(userId);
-        return itemStorage.save(item);
+        return ItemMapper.toItemDto(itemStorage.save(item));
     }
 
     @Override
-    public Item get(long id) {
-        return itemStorage.get(id);
+    public ItemDto get(long id) {
+        return ItemMapper.toItemDto(itemStorage.get(id));
     }
 
     @Override
-    public Item update(Item item, long userId) {
+    public ItemDto update(Item item, long userId) {
         userStorage.get(userId);
         if (itemStorage.get(item.getId()).getOwner() != userId)
             throw new AccessException("User " + userId + " not owner for item " + item.getId());
-        return itemStorage.update(item);
+        return ItemMapper.toItemDto(itemStorage.update(item));
     }
 
     @Override
@@ -48,12 +51,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getAll(long userId) {
-        return itemStorage.getAll(userId);
+    public List<ItemDto> getAll(long userId) {
+        return itemStorage.getAll(userId).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Item> search(String query) {
-        return itemStorage.search(query);
+    public List<ItemDto> search(String query) {
+        return itemStorage.search(query).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 }
