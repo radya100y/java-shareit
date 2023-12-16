@@ -19,7 +19,7 @@ public class UserStorageRam implements UserStorage {
 
     @Override
     public User save(User user) {
-        if (!validate(user)) throw new AlreadyExistException("Email " + user.getEmail() + " already exists");
+        validateEmail(user);
         user.setId(++id);
         users.add(user);
         return user;
@@ -35,26 +35,16 @@ public class UserStorageRam implements UserStorage {
 
     @Override
     public User update(User user) {
-        if (!validate(user)) throw new AlreadyExistException("Email " + user.getEmail() + " already exists");
-        for (User userFind : users) {
-            if (userFind.getId() == user.getId()) {
-                if (user.getName() != null) userFind.setName(user.getName());
-                if (user.getEmail() != null) userFind.setEmail(user.getEmail());
-                return userFind;
-            }
-        }
-        throw new NotFoundException("User " + id + " not found");
+        validateEmail(user);
+        User userFind = get(user.getId());
+        if (user.getName() != null) userFind.setName(user.getName());
+        if (user.getEmail() != null) userFind.setEmail(user.getEmail());
+        return userFind;
     }
 
     @Override
     public void delete(long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                users.remove(user);
-                return;
-            }
-        }
-        throw new NotFoundException("User " + id + " not found");
+        users.remove(get(id));
     }
 
     @Override
@@ -62,11 +52,11 @@ public class UserStorageRam implements UserStorage {
         return users;
     }
 
-    public boolean validate(User user) { // При размещении данных в БД - вынести проверку уникальности на constraint
-        if (user.getEmail() == null) return true;
+    public void validateEmail(User user) {// При размещении данных в БД-вынести проверку уникальности на constraint
+        if (user.getEmail() == null) return;
         for (User userFind : users) {
-            if ((user.getEmail().equals(userFind.getEmail())) && (user.getId() != userFind.getId())) return false;
+            if ((user.getEmail().equals(userFind.getEmail())) && (user.getId() != userFind.getId()))
+                throw new AlreadyExistException("Email " + user.getEmail() + " already exists");
         }
-        return true;
     }
 }
