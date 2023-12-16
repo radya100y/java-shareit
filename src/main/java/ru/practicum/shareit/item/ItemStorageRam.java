@@ -55,10 +55,11 @@ public class ItemStorageRam implements ItemStorage {
 
     @Override
     public List<Item> search(String query) {
+        if (query.isBlank()) return List.of();
         return items.stream()
                 .filter(Item::getAvailable)
-                .filter(x -> (x.getName().toLowerCase(Locale.ROOT).contains(query) ||
-                        (x.getDescription().toLowerCase(Locale.ROOT).contains(query))))
+                .filter(x -> (x.getName().toUpperCase().contains(query.toUpperCase())) ||
+                        (x.getDescription().toUpperCase().contains(query.toUpperCase())))
                 .collect(Collectors.toList());
     }
 }

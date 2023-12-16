@@ -48,7 +48,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<Item> search(@PathParam("text") String query) {
-        return itemService.search(query);
+    public List<Item> search(@RequestParam String text) {
+        return itemService.search(text);
     }
 }
