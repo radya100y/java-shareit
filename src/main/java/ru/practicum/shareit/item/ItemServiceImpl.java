@@ -34,8 +34,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item update(Item item, long userId) {
         userStorage.get(userId);
-        if (item.getOwner() != userId)
-            throw new AccessException("User " + userId + " not owner item " + item.getId());
+        if (itemStorage.get(item.getId()).getOwner() != userId)
+            throw new AccessException("User " + userId + " not owner for item " + item.getId());
         return itemStorage.update(item);
     }
 
@@ -48,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getall(long userId) {
+    public List<Item> getAll(long userId) {
         return itemStorage.getAll(userId);
     }
 

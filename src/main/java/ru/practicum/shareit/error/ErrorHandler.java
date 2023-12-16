@@ -27,4 +27,10 @@ public class ErrorHandler {
         return new ErrorResponse(exc.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleAccessException(final AccessException exc) {
+        return new ErrorResponse(exc.getMessage());
+    }
+
 }
