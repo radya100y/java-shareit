@@ -21,7 +21,7 @@ public class Item extends Entity {
     private String description;
 
     @NotNull
-    private boolean available;
+    private Boolean available;
 
     @NotNull
     private long owner;
