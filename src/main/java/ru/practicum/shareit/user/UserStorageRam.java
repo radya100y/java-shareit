@@ -56,7 +56,7 @@ public class UserStorageRam implements UserStorage {
         return users;
     }
 
-    public void validateEmail(User user) {// При размещении данных в БД-вынести проверку уникальности на constraint
+    public void validateEmail(User user) {  // При размещении данных в БД-вынести проверку уникальности на constraint
         if (user.getEmail() == null) return;
         for (User userFind : users) {
             if ((user.getEmail().equals(userFind.getEmail())) && (user.getId() != userFind.getId()))
