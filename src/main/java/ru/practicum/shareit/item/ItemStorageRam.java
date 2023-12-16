@@ -4,6 +4,8 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Repository
 public class ItemStorageRam implements ItemStorage {
@@ -55,7 +57,18 @@ public class ItemStorageRam implements ItemStorage {
     }
 
     @Override
-    public List<Item> getAll() {
-        return items;
+    public List<Item> getAll(long userId) {
+        return items.stream()
+                .filter(x -> x.getOwner() == userId)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Item> search(String query) {
+        return items.stream()
+                .filter(Item::getAvailable)
+                .filter(x -> (x.getName().toLowerCase(Locale.ROOT).contains(query) ||
+                        (x.getDescription().toLowerCase(Locale.ROOT).contains(query))))
+                .collect(Collectors.toList());
     }
 }

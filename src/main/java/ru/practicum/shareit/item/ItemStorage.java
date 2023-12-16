@@ -13,5 +13,7 @@ public interface ItemStorage {
 
     void delete(long id);
 
-    List<Item> getAll();
+    List<Item> getAll(long userId);
+
+    List<Item> search(String query);
 }
