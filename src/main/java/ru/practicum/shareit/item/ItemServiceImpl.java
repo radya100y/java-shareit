@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.AccessException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -10,16 +11,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
     private final ItemStorage itemStorage;
     private final UserStorage userStorage;
-
-    public ItemServiceImpl(ItemStorage itemStorage, UserStorage userStorage) {
-        this.itemStorage = itemStorage;
-        this.userStorage = userStorage;
-    }
-
 
     @Override
     public ItemDto save(ItemDto item, long userId) {
