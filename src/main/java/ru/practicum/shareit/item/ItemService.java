@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface ItemService {
 
-    ItemDto save(Item item, long userId);
+    ItemDto save(ItemDto item, long userId);
 
     ItemDto get(long id);
 
-    ItemDto update(Item item, long userId);
+    ItemDto update(ItemDto item, long userId);
 
     void delete(long id, long userId);
 

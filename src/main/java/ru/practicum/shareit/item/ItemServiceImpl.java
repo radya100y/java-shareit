@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.AccessException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserStorage;
 
 import java.util.List;
@@ -23,10 +22,10 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public ItemDto save(Item item, long userId) {
+    public ItemDto save(ItemDto item, long userId) {
         userStorage.get(userId);
         item.setOwner(userId);
-        return ItemMapper.toItemDto(itemStorage.save(item));
+        return ItemMapper.toItemDto(itemStorage.save(ItemMapper.toItem(item)));
     }
 
     @Override
@@ -35,11 +34,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto update(Item item, long userId) {
+    public ItemDto update(ItemDto item, long userId) {
         userStorage.get(userId);
         if (itemStorage.get(item.getId()).getOwner() != userId)
             throw new AccessException("User " + userId + " not owner for item " + item.getId());
-        return ItemMapper.toItemDto(itemStorage.update(item));
+        return ItemMapper.toItemDto(itemStorage.update(ItemMapper.toItem(item)));
     }
 
     @Override
