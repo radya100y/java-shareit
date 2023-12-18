@@ -1,20 +1,18 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.error.AlreadyExistException;
 import ru.practicum.shareit.error.NotFoundException;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class UserStorageRam implements UserStorage {
 
     private final List<User> users;
 
     private long id = 0L;
-
-    public UserStorageRam(List<User> userList) {
-        this.users = userList;
-    }
 
     @Override
     public User save(User user) {
@@ -46,7 +44,6 @@ public class UserStorageRam implements UserStorage {
 
     @Override
     public void delete(long id) {
-
         users.remove(get(id));
     }
 

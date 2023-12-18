@@ -10,7 +10,6 @@ import java.util.List;
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
 
     @GetMapping("/{id}")
@@ -19,12 +18,12 @@ public class UserController {
     }
 
     @PostMapping()
-    public UserDto save(@Valid @RequestBody User user) {
+    public UserDto save(@Valid @RequestBody UserDto user) {
         return userService.save(user);
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@RequestBody User user, @PathVariable("id") long userId) {
+    public UserDto update(@RequestBody UserDto user, @PathVariable("id") long userId) {
         user.setId(userId);
         return userService.update(user);
     }
