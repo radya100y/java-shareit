@@ -1,37 +1,58 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.error.AlreadyExistException;
+import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserStorage userStorage;
+    @Autowired
+    private final UserRepository userStorage;
 
     public UserDto save(UserDto user) {
-        return UserMapper.toUserDto(userStorage.save(UserMapper.toUser(user)));
+        try {
+            return UserMapper.toUserDto(userStorage.save(UserMapper.toUser(user)));
+        }
+        catch (DataIntegrityViolationException ex) {
+            throw new AlreadyExistException("Пользователь с адресом " + user.getEmail() + " уже существует");
+        }
     }
 
     public UserDto get(Long id) {
-        return UserMapper.toUserDto(userStorage.get(id));
+        Optional<User> user = userStorage.findById(id);
+        if (user.isEmpty()) throw new NotFoundException("Пользлватель с идентификатором " + id + " не найден");
+        return UserMapper.toUserDto(user.get());
     }
 
     public UserDto update(UserDto user) {
-        return UserMapper.toUserDto(userStorage.update(UserMapper.toUser(user)));
+        UserDto savedUser = get(user.getId());
+        if (user.getEmail() == null) user.setEmail(savedUser.getEmail());
+        if (user.getName() == null) user.setName(savedUser.getName());
+        try {
+            return UserMapper.toUserDto(userStorage.save(UserMapper.toUser(user)));
+        }
+        catch (DataIntegrityViolationException ex) {
+            throw new AlreadyExistException("Пользователь с адресом " + user.getEmail() + " уже существует");
+        }
     }
 
     public void delete(long id) {
-        userStorage.delete(id);
+        userStorage.deleteById(id);
     }
 
     public List<UserDto> getAll() {
-        return userStorage.getAll().stream()
+        return userStorage.findAll().stream()
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
     }
