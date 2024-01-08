@@ -39,4 +39,11 @@ public class ErrorHandler {
         return new ErrorResponse(exc.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidateException(final ValidateException exc) {
+        log.debug("Получен статус 400 Bad request {}", exc.getMessage(), exc);
+        return new ErrorResponse(exc.getMessage());
+    }
+
 }

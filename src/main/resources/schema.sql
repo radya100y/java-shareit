@@ -28,7 +28,7 @@ create table if not exists bookings
     , item_id bigint not null
     , pb datetime not null
     , pe datetime not null
-    , status booking_status not null
+    , status booking_status not null default 'WAITING'
     , user_id bigint not null
     , foreign key (item_id) references items(id) on delete cascade
     , foreign key (user_id) references users(id) on delete cascade
