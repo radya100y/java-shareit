@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Deprecated
 public class ItemServiceImpl implements ItemService {
 
     private final ItemStorage itemStorage;

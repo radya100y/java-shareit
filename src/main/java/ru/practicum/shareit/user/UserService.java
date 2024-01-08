@@ -31,7 +31,7 @@ public class UserService {
 
     public UserDto get(Long id) {
         Optional<User> user = userStorage.findById(id);
-        if (user.isEmpty()) throw new NotFoundException("Пользлватель с идентификатором " + id + " не найден");
+        if (user.isEmpty()) throw new NotFoundException("Пользователь с идентификатором " + id + " не найден");
         return UserMapper.toUserDto(user.get());
     }
 

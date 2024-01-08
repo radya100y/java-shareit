@@ -21,6 +21,7 @@ public class ItemController {
 
     @PostMapping()
     public ItemDto save(@Valid @RequestBody ItemDto item, @RequestHeader("X-Sharer-User-Id") long userId) {
+        item.setOwner(userId);
         return itemService.save(item, userId);
     }
 
@@ -29,6 +30,7 @@ public class ItemController {
                           @RequestHeader("X-Sharer-User-Id") long userId,
                           @PathVariable("id") long itemId) {
         item.setId(itemId);
+        item.setOwner(userId);
         return itemService.update(item, userId);
     }
 
