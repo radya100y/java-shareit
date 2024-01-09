@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.error.ValidateException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,26 +26,31 @@ public class BookingService {
     @Autowired
     private final UserRepository userRepository;
 
-    private void validate(BookingDto bookingDto) {
+    private Item item;
 
-        if (userRepository.findById(bookingDto.getUserId()).isEmpty())
-            throw new NotFoundException("Пользователь " + bookingDto.getUserId() + " не найден");
+    private User user;
 
-        if (bookingDto.getStart() == null || bookingDto.getEnd() == null)
+    private void validate(BookingDto booking) {
+
+        item = itemRepository.findById(booking.getItemId())
+                .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
+        user = userRepository.findById(booking.getUserId())
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        if (booking.getStart() == null || booking.getEnd() == null)
             throw new ValidateException("Некорректно указаны даты начала или окончания бронирования");
 
-        if (bookingDto.getStart().isAfter(bookingDto.getEnd()) || bookingDto.getStart().isEqual(bookingDto.getEnd()))
+        if (booking.getStart().isAfter(booking.getEnd()) || booking.getStart().isEqual(booking.getEnd()))
             throw new ValidateException("Дата начала бронирования должна быть меньше даты окончания бронирования");
 
-        Optional<Item> item = itemRepository.findById(bookingDto.getItemId());
-
-        if ((item.isEmpty()) || (!item.get().getAvailable()))
-            throw new NotFoundException("Вещь " + bookingDto.getItemId() + " не найдена или недоступна");
+        if (!item.getAvailable())
+            throw new ValidateException("Вещь " + booking.getItemId() + " недоступна");
     }
 
-    public BookingDto save(BookingDto bookingDto) {
-        bookingDto.setStatus(BookingStatus.WAITING);
-        validate(bookingDto);
-        return BookingMapper.toBookingDto(bookingRepository.save(BookingMapper.toBooking(bookingDto)));
+    public Booking save(BookingDto booking) {
+
+        validate(booking);
+        return bookingRepository.save(BookingMapper.toBooking(booking, item, user));
     }
+
 }

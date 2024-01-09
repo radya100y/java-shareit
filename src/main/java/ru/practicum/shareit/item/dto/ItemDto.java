@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "items", schema = "public")
-public class ItemDto {
+public class ItemDto implements ItemSmallDto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

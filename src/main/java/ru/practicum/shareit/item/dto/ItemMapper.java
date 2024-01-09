@@ -26,4 +26,11 @@ public class ItemMapper {
                 .owner(item.getOwner())
                 .build();
     }
+
+//    public static ItemSmallDto toItemSmallDto(Item item) {
+//        return new ItemSmallDto(
+//                item.getId(),
+//                item.getName()
+//        );
+//    }
 }

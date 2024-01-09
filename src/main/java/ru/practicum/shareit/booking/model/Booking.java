@@ -3,21 +3,21 @@ package ru.practicum.shareit.booking.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data @RequiredArgsConstructor @AllArgsConstructor
+@Data @RequiredArgsConstructor @AllArgsConstructor @SuperBuilder
 @Entity @Table(name = "bookings", schema = "public")
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "item_id", nullable = false)
-    private long itemId;
 
     @Column(name = "pb", nullable = false)
     private LocalDateTime start;
@@ -29,6 +29,11 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    @Column(name = "user_id", nullable = false)
-    private long userId;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User booker;
 }

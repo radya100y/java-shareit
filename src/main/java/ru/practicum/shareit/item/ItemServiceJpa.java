@@ -28,8 +28,9 @@ public class ItemServiceJpa implements ItemService {
 
     @Override
     public ItemDto save(ItemDto item, long userId) {
-        if (userRepository.findById(userId).isEmpty())
-            throw new NotFoundException("Пользователь с идентификатором " + userId + " не найден");
+        userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException("Пользователь с идентификатором " + userId + " не найден"));
+
         return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(item)));
     }
 

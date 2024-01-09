@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ru.practicum.shareit.item.dto.ItemSmallDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -16,7 +17,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Entity
 @Table(name = "items", schema = "public")
-public class Item {
+public class Item implements ItemSmallDto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
