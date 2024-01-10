@@ -46,4 +46,11 @@ public class ErrorHandler {
         return new ErrorResponse(exc.getMessage());
     }
 
+/*    @ExceptionHandler //Неправильный статус - не работает
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalArgumantException(final IllegalArgumentException exc) {
+        log.debug("Получен статус 400 Bad request {}", exc.getMessage(), exc);
+        return new ErrorResponse(exc.getMessage());
+    }*/
+
 }
