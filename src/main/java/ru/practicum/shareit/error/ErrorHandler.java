@@ -33,9 +33,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+//    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleAccessException(final AccessException exc) {
-        log.debug("Получен статус 403 forbidden {}", exc.getMessage(), exc);
+//        log.debug("Получен статус 403 forbidden {}", exc.getMessage(), exc);
+        log.warn("Получен статус 404 not found {}", exc.getMessage(), exc);
         return new ErrorResponse(exc.getMessage());
     }
 
@@ -46,7 +48,7 @@ public class ErrorHandler {
         return new ErrorResponse(exc.getMessage());
     }
 
-/*    @ExceptionHandler //Неправильный статус - не работает
+/*    @ExceptionHandler //Неправильный статус в бронировании (не работает)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumantException(final IllegalArgumentException exc) {
         log.debug("Получен статус 400 Bad request {}", exc.getMessage(), exc);

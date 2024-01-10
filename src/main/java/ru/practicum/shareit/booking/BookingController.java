@@ -46,4 +46,12 @@ public class BookingController {
                                               BookingStatusParam state) {
         return bookingService.getBookingForBooker(userId, state);
     }
+
+    @GetMapping("/owner")
+    public List<Booking> getBookingsForOwner(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestParam(required = false, defaultValue = "ALL") BookingStatusParam state
+    ) {
+        return bookingService.getBookingForOwner(userId, state);
+    }
 }

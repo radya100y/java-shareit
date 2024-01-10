@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.error.AccessException;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.error.ValidateException;
 import ru.practicum.shareit.item.ItemRepository;
@@ -53,6 +54,9 @@ public class BookingService {
 
         if (!item.getAvailable())
             throw new ValidateException("Вещь " + booking.getItemId() + " недоступна");
+
+        if (booking.getUserId() == item.getOwner())
+            throw new AccessException("Вещь не может быть забронирована владельцем");
     }
 
     public Booking save(BookingDto booking) {
@@ -66,7 +70,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронирование " + bookingId + " не найдено"));
         validateReferences(BookingMapper.toBookingDto(booking));
-        if (booking.getItem().getOwner() != userId) throw new ValidateException("Пользователь " +
+        if (booking.getItem().getOwner() != userId) throw new AccessException("Пользователь " +
                 userId + " не имеет прав на редактирование бронироввания " + bookingId);
         booking.setStatus(status);
         return bookingRepository.save(booking);
@@ -77,7 +81,7 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронирование " + bookingId + " не найдено"));
         if (!((booking.getItem().getOwner() == userId) || (booking.getBooker().getId() == userId)))
-            throw new ValidateException("Пользователь " + userId + " не имеет прав на просмотр бронироввания " +
+            throw new AccessException("Пользователь " + userId + " не имеет прав на просмотр бронироввания " +
                     bookingId);
         return booking;
     }
@@ -85,6 +89,7 @@ public class BookingService {
     List<Booking> getBookingForBooker(long bookerId, BookingStatusParam state) {
 
         userRepository.findById(bookerId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
         switch (state) {
             case ALL:
                 return bookingRepository.findAllByBooker_IdOrderByIdDesc(bookerId);
@@ -101,6 +106,31 @@ public class BookingService {
                 return bookingRepository.findAllByBooker_IdAndStatusOrderByIdDesc(bookerId, BookingStatus.WAITING);
             case REJECTED:
                 return bookingRepository.findAllByBooker_IdAndStatusOrderByIdDesc(bookerId, BookingStatus.REJECTED);
+            default:
+                throw new NotFoundException("Такого статуса нет");
+        }
+    }
+
+    List<Booking> getBookingForOwner(long ownerId, BookingStatusParam state) {
+
+        userRepository.findById(ownerId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        switch (state) {
+            case ALL:
+                return bookingRepository.findAllByItemOwnerOrderByIdDesc(ownerId);
+            case CURRENT:
+                return bookingRepository.findAllByItemOwnerAndStatusAndStartIsAfterAndEndIsBeforeOrderByIdDesc(
+                        ownerId, BookingStatus.APPROVED, LocalDateTime.now(), LocalDateTime.now());
+            case PAST:
+                return bookingRepository.findAllByItemOwnerAndStatusAndEndIsBeforeOrderByIdDesc(
+                        ownerId, BookingStatus.APPROVED, LocalDateTime.now());
+            case FUTURE:
+                return bookingRepository.findAllByItemOwnerAndStatusInAndStartIsAfterOrderByIdDesc(
+                        ownerId, List.of(BookingStatus.APPROVED, BookingStatus.WAITING), LocalDateTime.now());
+            case WAITING:
+                return bookingRepository.findAllByItemOwnerAndStatusOrderByIdDesc(ownerId, BookingStatus.WAITING);
+            case REJECTED:
+                return bookingRepository.findAllByItemOwnerAndStatusOrderByIdDesc(ownerId, BookingStatus.REJECTED);
             default:
                 throw new NotFoundException("Такого статуса нет");
         }
