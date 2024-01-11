@@ -72,6 +72,8 @@ public class BookingService {
         validateReferences(BookingMapper.toBookingDto(booking));
         if (booking.getItem().getOwner() != userId) throw new AccessException("Пользователь " +
                 userId + " не имеет прав на редактирование бронироввания " + bookingId);
+        if (booking.getStatus().equals(status))
+            throw new ValidateException("Статус " + status + " уже установлен для бронирования " + bookingId);
         booking.setStatus(status);
         return bookingRepository.save(booking);
     }

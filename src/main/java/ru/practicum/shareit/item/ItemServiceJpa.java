@@ -74,6 +74,7 @@ public class ItemServiceJpa implements ItemService {
 
     @Override
     public List<ItemDto> search(String query) {
+        if (query.isBlank()) return List.of();
         return itemRepository.getByNameOrDescrAndAvail(query).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());

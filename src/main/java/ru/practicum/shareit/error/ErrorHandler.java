@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 @Slf4j
@@ -33,10 +34,8 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-//    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleAccessException(final AccessException exc) {
-//        log.debug("Получен статус 403 forbidden {}", exc.getMessage(), exc);
         log.warn("Получен статус 404 not found {}", exc.getMessage(), exc);
         return new ErrorResponse(exc.getMessage());
     }
@@ -48,11 +47,11 @@ public class ErrorHandler {
         return new ErrorResponse(exc.getMessage());
     }
 
-/*    @ExceptionHandler //Неправильный статус в бронировании (не работает)
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegalArgumantException(final IllegalArgumentException exc) {
+    public ErrorResponse handleIllegalEnumException(final MethodArgumentTypeMismatchException exc) {
         log.debug("Получен статус 400 Bad request {}", exc.getMessage(), exc);
-        return new ErrorResponse(exc.getMessage());
-    }*/
+        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS");
+    }
 
 }
