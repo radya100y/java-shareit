@@ -26,7 +26,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto get(long id) {
+    public ItemDto get(long id, long userId) {
         return ItemMapper.toItemDto(itemStorage.get(id));
     }
 

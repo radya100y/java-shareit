@@ -3,8 +3,8 @@ package ru.practicum.shareit.item.dto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ru.practicum.shareit.booking.dto.BookingSmall;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,29 +12,24 @@ import javax.validation.constraints.Size;
 @Data
 @SuperBuilder
 @RequiredArgsConstructor
-@Entity
-@Table(name = "items", schema = "public")
-public class ItemDto implements ItemSmallDto {
+public class ItemDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
-    @Column(nullable = false)
     @Size(max = 255)
+    @NotBlank
     private String name;
 
     @NotBlank
-    @Column(nullable = false)
     @Size(max = 512)
     private String description;
 
     @NotNull
-    @Column(nullable = false)
     private Boolean available;
 
-    @NotNull
-    @Column(name = "owner_id", nullable = false)
     private long owner;
+
+    private BookingSmall lastBooking;
+
+    private BookingSmall nextBooking;
 }

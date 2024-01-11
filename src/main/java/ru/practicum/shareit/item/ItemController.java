@@ -15,8 +15,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{id}")
-    public ItemDto get(@PathVariable("id") long id) {
-        return itemService.get(id);
+    public ItemDto get(@PathVariable("id") long id, @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.get(id, userId);
     }
 
     @PostMapping()

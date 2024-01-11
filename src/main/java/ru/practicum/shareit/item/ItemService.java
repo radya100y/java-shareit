@@ -8,7 +8,7 @@ public interface ItemService {
 
     ItemDto save(ItemDto item, long userId);
 
-    ItemDto get(long id);
+    ItemDto get(long id, long userId);
 
     ItemDto update(ItemDto item, long userId);
 

@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.dto;
 
 
 import lombok.experimental.UtilityClass;
+import ru.practicum.shareit.booking.dto.BookingSmall;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 
 @UtilityClass
@@ -27,10 +29,10 @@ public class ItemMapper {
                 .build();
     }
 
-//    public static ItemSmallDto toItemSmallDto(Item item) {
-//        return new ItemSmallDto(
-//                item.getId(),
-//                item.getName()
-//        );
-//    }
+    public static BookingSmall toBookingSmall(Booking booking) {
+        return new BookingSmall(
+                booking.getId(),
+                booking.getBooker().getId()
+        );
+    }
 }
