@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.AccessException;
 import ru.practicum.shareit.error.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
@@ -29,6 +31,10 @@ public class ItemServiceJpa implements ItemService {
 
     @Autowired
     private final BookingRepository bookingRepository;
+
+    @Autowired
+    private final CommentRepository commentRepository;
+
 
     @Override
     public ItemDto save(ItemDto item, long userId) {
@@ -99,5 +105,24 @@ public class ItemServiceJpa implements ItemService {
         return itemRepository.getByNameOrDescrAndAvail(query).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentResponse addComment(CommentRequest commentRequest) {
+
+        Item item = itemRepository.findById(commentRequest.getItemId()).orElseThrow(() ->
+                new NotFoundException("Вещь с идентификатором " + commentRequest.getItemId() + " не найдена"));
+
+        User user = userRepository.findById(commentRequest.getUserId()).orElseThrow(() ->
+                new NotFoundException("Пользователь с идентификатором " + commentRequest.getUserId() + " не найден"));
+
+        List<Booking> bookings = bookingRepository.findAllByItem_IdAndBooker_IdAndStatusAndEndIsAfter(
+                commentRequest.getItemId(), commentRequest.getUserId(), BookingStatus.APPROVED, LocalDateTime.now());
+        if (bookings.isEmpty())
+            throw new NotFoundException("У пользователя с идентификатором " +
+                commentRequest.getUserId() + " не найдено ни одного завершенного бронирования");
+
+        return CommentMapper.toCommentResponseFromComment(
+                commentRepository.save(CommentMapper.toCommentFromRequest(commentRequest, item, user)));
     }
 }
