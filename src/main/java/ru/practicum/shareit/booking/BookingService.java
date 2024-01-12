@@ -138,12 +138,4 @@ public class BookingService {
         }
     }
 
-    Booking getLastBookingForItem(long itemId) {
-        return bookingRepository.findByItem_IdAndEndIsBeforeOrderByEndDesc(itemId, LocalDateTime.now()).get(0);
-    }
-
-    Booking getNextBookingForItem(long itemId) {
-        return bookingRepository.findByItem_IdAndStartIsAfterOrderByStartAsc(itemId, LocalDateTime.now()).get(0);
-    }
-
 }

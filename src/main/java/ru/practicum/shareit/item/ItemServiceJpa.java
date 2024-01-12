@@ -9,6 +9,7 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.AccessException;
 import ru.practicum.shareit.error.NotFoundException;
+import ru.practicum.shareit.error.ValidateException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -51,8 +52,8 @@ public class ItemServiceJpa implements ItemService {
         if (itemDto.getOwner() == userId) {
             Booking lastBooking = bookingRepository.findByItem_IdAndEndIsBeforeOrderByEndDesc(
                     id, LocalDateTime.now()).stream().findFirst().orElse(null);
-            Booking nextBooking = bookingRepository.findByItem_IdAndStartIsAfterOrderByStartAsc(
-                    id, LocalDateTime.now()).stream().findFirst().orElse(null);
+            Booking nextBooking = bookingRepository.findByItem_IdAndStartIsAfterAndStatusOrderByStartAsc(
+                    id, LocalDateTime.now(), BookingStatus.APPROVED).stream().findFirst().orElse(null);
             if (lastBooking != null) itemDto.setLastBooking(ItemMapper.toBookingSmall(lastBooking));
             if (nextBooking != null) itemDto.setNextBooking(ItemMapper.toBookingSmall(nextBooking));
         }
@@ -90,8 +91,9 @@ public class ItemServiceJpa implements ItemService {
                 .map(x -> {
                     Booking lastBooking = bookingRepository.findByItem_IdAndEndIsBeforeOrderByEndDesc(
                             x.getId(), LocalDateTime.now()).stream().findFirst().orElse(null);
-                    Booking nextBooking = bookingRepository.findByItem_IdAndStartIsAfterOrderByStartAsc(
-                            x.getId(), LocalDateTime.now()).stream().findFirst().orElse(null);
+                    Booking nextBooking = bookingRepository.findByItem_IdAndStartIsAfterAndStatusOrderByStartAsc(
+                            x.getId(), LocalDateTime.now(), BookingStatus.APPROVED)
+                                .stream().findFirst().orElse(null);
                     if (lastBooking != null) x.setLastBooking(ItemMapper.toBookingSmall(lastBooking));
                     if (nextBooking != null) x.setNextBooking(ItemMapper.toBookingSmall(nextBooking));
                     return x;
@@ -116,10 +118,10 @@ public class ItemServiceJpa implements ItemService {
         User user = userRepository.findById(commentRequest.getUserId()).orElseThrow(() ->
                 new NotFoundException("Пользователь с идентификатором " + commentRequest.getUserId() + " не найден"));
 
-        List<Booking> bookings = bookingRepository.findAllByItem_IdAndBooker_IdAndStatusAndEndIsAfter(
+        List<Booking> bookings = bookingRepository.findAllByItem_IdAndBooker_IdAndStatusAndEndIsBefore(
                 commentRequest.getItemId(), commentRequest.getUserId(), BookingStatus.APPROVED, LocalDateTime.now());
         if (bookings.isEmpty())
-            throw new NotFoundException("У пользователя с идентификатором " +
+            throw new ValidateException("У пользователя с идентификатором " +
                 commentRequest.getUserId() + " не найдено ни одного завершенного бронирования");
 
         return CommentMapper.toCommentResponseFromComment(

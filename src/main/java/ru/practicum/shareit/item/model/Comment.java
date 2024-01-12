@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @SuperBuilder
@@ -20,10 +21,12 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "item_id")
+    @NotNull
     private Item item;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @NotNull
     private User author;
 
     @Column(name = "comment", nullable = false)
