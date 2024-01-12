@@ -8,7 +8,9 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 
 @SuperBuilder
-@AllArgsConstructor @RequiredArgsConstructor @Getter
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Getter
 public class CommentResponse {
 
     private long id;

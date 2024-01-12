@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Data @AllArgsConstructor @RequiredArgsConstructor
+@Data
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class CommentRequest {
 
     private Long itemId;

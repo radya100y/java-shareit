@@ -11,8 +11,12 @@ import ru.practicum.shareit.user.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data @RequiredArgsConstructor @AllArgsConstructor @SuperBuilder
-@Entity @Table(name = "bookings", schema = "public")
+@Data
+@RequiredArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+@Entity
+@Table(name = "bookings", schema = "public")
 public class Booking {
 
     @Id

@@ -23,8 +23,7 @@ public class UserService {
     public UserDto save(UserDto user) {
         try {
             return UserMapper.toUserDto(userStorage.save(UserMapper.toUser(user)));
-        }
-        catch (DataIntegrityViolationException ex) {
+        } catch (DataIntegrityViolationException ex) {
             throw new AlreadyExistException("Пользователь с адресом " + user.getEmail() + " уже существует");
         }
     }
@@ -41,8 +40,7 @@ public class UserService {
         if (user.getName() == null) user.setName(savedUser.getName());
         try {
             return UserMapper.toUserDto(userStorage.save(UserMapper.toUser(user)));
-        }
-        catch (DataIntegrityViolationException ex) {
+        } catch (DataIntegrityViolationException ex) {
             throw new AlreadyExistException("Пользователь с адресом " + user.getEmail() + " уже существует");
         }
     }

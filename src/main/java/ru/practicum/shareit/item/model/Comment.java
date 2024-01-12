@@ -11,8 +11,11 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @SuperBuilder
-@RequiredArgsConstructor @AllArgsConstructor @Getter
-@Entity @Table(name = "comments", schema = "public")
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Getter
+@Entity
+@Table(name = "comments", schema = "public")
 public class Comment {
 
     @Id
