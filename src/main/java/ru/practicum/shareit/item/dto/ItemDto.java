@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingSmall;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -32,4 +33,6 @@ public class ItemDto {
     private BookingSmall lastBooking;
 
     private BookingSmall nextBooking;
+
+    private List<CommentResponse> comments;
 }

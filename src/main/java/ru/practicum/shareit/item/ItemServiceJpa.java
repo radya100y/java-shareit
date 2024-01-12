@@ -36,7 +36,6 @@ public class ItemServiceJpa implements ItemService {
     @Autowired
     private final CommentRepository commentRepository;
 
-
     @Override
     public ItemDto save(ItemDto item, long userId) {
         userRepository.findById(userId).orElseThrow(() ->
@@ -50,13 +49,17 @@ public class ItemServiceJpa implements ItemService {
         ItemDto itemDto = ItemMapper.toItemDto(itemRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Вещь с идентификатором " + id + " не найдена")));
         if (itemDto.getOwner() == userId) {
-            Booking lastBooking = bookingRepository.findByItem_IdAndEndIsBeforeOrderByEndDesc(
+            Booking lastBooking = bookingRepository.findByItem_IdAndStartIsBeforeOrderByEndDesc(
                     id, LocalDateTime.now()).stream().findFirst().orElse(null);
             Booking nextBooking = bookingRepository.findByItem_IdAndStartIsAfterAndStatusOrderByStartAsc(
                     id, LocalDateTime.now(), BookingStatus.APPROVED).stream().findFirst().orElse(null);
             if (lastBooking != null) itemDto.setLastBooking(ItemMapper.toBookingSmall(lastBooking));
             if (nextBooking != null) itemDto.setNextBooking(ItemMapper.toBookingSmall(nextBooking));
         }
+        itemDto.setComments(commentRepository.findAllByItem_IdOrderById(id).stream()
+                .map(CommentMapper::toCommentResponseFromComment)
+                .collect(Collectors.toList())
+        );
         return itemDto;
     }
 
@@ -89,7 +92,7 @@ public class ItemServiceJpa implements ItemService {
         return itemRepository.findAllByOwner(userId).stream()
                 .map(ItemMapper::toItemDto)
                 .map(x -> {
-                    Booking lastBooking = bookingRepository.findByItem_IdAndEndIsBeforeOrderByEndDesc(
+                    Booking lastBooking = bookingRepository.findByItem_IdAndStartIsBeforeOrderByEndDesc(
                             x.getId(), LocalDateTime.now()).stream().findFirst().orElse(null);
                     Booking nextBooking = bookingRepository.findByItem_IdAndStartIsAfterAndStatusOrderByStartAsc(
                             x.getId(), LocalDateTime.now(), BookingStatus.APPROVED)

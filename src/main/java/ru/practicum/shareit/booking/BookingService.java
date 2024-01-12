@@ -96,8 +96,8 @@ public class BookingService {
             case ALL:
                 return bookingRepository.findAllByBooker_IdOrderByIdDesc(bookerId);
             case CURRENT:
-                return bookingRepository.findAllByBooker_IdAndStatusAndStartIsAfterAndEndIsBeforeOrderByIdDesc(bookerId,
-                        BookingStatus.APPROVED, LocalDateTime.now(), LocalDateTime.now());
+                return bookingRepository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByIdAsc(bookerId,
+                        LocalDateTime.now(), LocalDateTime.now());
             case PAST:
                 return bookingRepository.findAllByBooker_IdAndStatusAndEndIsBeforeOrderByIdDesc(bookerId,
                         BookingStatus.APPROVED, LocalDateTime.now());
@@ -121,8 +121,8 @@ public class BookingService {
             case ALL:
                 return bookingRepository.findAllByItemOwnerOrderByIdDesc(ownerId);
             case CURRENT:
-                return bookingRepository.findAllByItemOwnerAndStatusAndStartIsAfterAndEndIsBeforeOrderByIdDesc(
-                        ownerId, BookingStatus.APPROVED, LocalDateTime.now(), LocalDateTime.now());
+                return bookingRepository.findAllByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByIdDesc(
+                        ownerId, LocalDateTime.now(), LocalDateTime.now());
             case PAST:
                 return bookingRepository.findAllByItemOwnerAndStatusAndEndIsBeforeOrderByIdDesc(
                         ownerId, BookingStatus.APPROVED, LocalDateTime.now());
