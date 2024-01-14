@@ -88,7 +88,7 @@ public class BookingService {
         return booking;
     }
 
-    List<Booking> getBookingForBooker(long bookerId, BookingStatusParam state) {
+    public List<Booking> getBookingForBooker(long bookerId, BookingStatusParam state) {
 
         userRepository.findById(bookerId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
@@ -113,7 +113,7 @@ public class BookingService {
         }
     }
 
-    List<Booking> getBookingForOwner(long ownerId, BookingStatusParam state) {
+    public List<Booking> getBookingForOwner(long ownerId, BookingStatusParam state) {
 
         userRepository.findById(ownerId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
