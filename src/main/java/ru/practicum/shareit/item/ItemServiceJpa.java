@@ -15,6 +15,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ public class ItemServiceJpa implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
+    @Transactional
     public ItemDto save(ItemDto item, long userId) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с идентификатором " + userId + " не найден"));
@@ -64,6 +66,7 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto update(ItemDto item, long userId) {
         if (userRepository.findById(userId).isEmpty())
             throw new NotFoundException("Пользователь с идентификатором " + userId + " не найден");
@@ -79,6 +82,7 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
+    @Transactional
     public void delete(long id, long userId) {
         if (userRepository.findById(userId).isEmpty())
             throw new NotFoundException("Пользователь с идентификатором " + userId + " не найден");
@@ -113,6 +117,7 @@ public class ItemServiceJpa implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentResponse addComment(CommentRequest commentRequest) {
 
         Item item = itemRepository.findById(commentRequest.getItemId()).orElseThrow(() ->

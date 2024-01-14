@@ -14,6 +14,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -59,12 +60,14 @@ public class BookingService {
             throw new AccessException("Вещь не может быть забронирована владельцем");
     }
 
+    @Transactional
     public Booking save(BookingDto booking) {
 
         validate(booking);
         return bookingRepository.save(BookingMapper.toBooking(booking, item, user));
     }
 
+    @Transactional
     public Booking update(long bookingId, long userId, BookingStatus status) {
 
         Booking booking = bookingRepository.findById(bookingId)

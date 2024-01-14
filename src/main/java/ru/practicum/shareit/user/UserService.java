@@ -9,6 +9,7 @@ import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ public class UserService {
     @Autowired
     private final UserRepository userStorage;
 
+    @Transactional
     public UserDto save(UserDto user) {
         try {
             return UserMapper.toUserDto(userStorage.save(UserMapper.toUser(user)));
@@ -34,6 +36,7 @@ public class UserService {
         return UserMapper.toUserDto(user.get());
     }
 
+    @Transactional
     public UserDto update(UserDto user) {
         UserDto savedUser = get(user.getId());
         if (user.getEmail() == null) user.setEmail(savedUser.getEmail());
@@ -45,6 +48,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void delete(long id) {
         userStorage.deleteById(id);
     }
