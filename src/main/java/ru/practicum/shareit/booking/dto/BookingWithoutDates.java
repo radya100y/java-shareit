@@ -14,11 +14,11 @@ import ru.practicum.shareit.user.User;
 @SuperBuilder
 public class BookingWithoutDates {
 
-    long id;
+    private long id;
 
-    BookingStatus status;
+    private BookingStatus status;
 
-    Item item;
+    private Item item;
 
-    User booker;
+    private User booker;
 }
