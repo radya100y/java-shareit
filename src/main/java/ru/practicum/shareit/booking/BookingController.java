@@ -42,7 +42,7 @@ public class BookingController {
 
     @GetMapping
     public List<Booking> getBookingsForBooker(@RequestHeader("X-Sharer-User-Id") long userId,
-                                              @RequestParam(required = false, defaultValue = "ALL")
+                                              @RequestParam(defaultValue = "ALL")
                                               BookingStatusParam state) {
         return bookingService.getBookingForBooker(userId, state);
     }
@@ -50,7 +50,7 @@ public class BookingController {
     @GetMapping("/owner")
     public List<Booking> getBookingsForOwner(
             @RequestHeader("X-Sharer-User-Id") long userId,
-            @RequestParam(required = false, defaultValue = "ALL") BookingStatusParam state
+            @RequestParam(defaultValue = "ALL") BookingStatusParam state
     ) {
         return bookingService.getBookingForOwner(userId, state);
     }
