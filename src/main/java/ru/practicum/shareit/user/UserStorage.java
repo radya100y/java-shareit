@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import java.util.List;
 
+@Deprecated
 public interface UserStorage {
 
     User save(User user);

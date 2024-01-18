@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
+@Deprecated
 public class ItemStorageRam implements ItemStorage {
 
     private final List<Item> items;

@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Deprecated
 public class UserStorageRam implements UserStorage {
 
     private final List<User> users;
