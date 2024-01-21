@@ -12,12 +12,15 @@ import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.error.ValidateException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,13 +40,18 @@ public class ItemServiceJpa implements ItemService {
     @Autowired
     private final CommentRepository commentRepository;
 
+    @Autowired
+    private final ItemRequestRepository itemRequestRepository;
+
     @Override
     @Transactional
     public ItemDto save(ItemDto item, long userId) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Пользователь с идентификатором " + userId + " не найден"));
-
-        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(item)));
+        ItemRequest ir;
+        if (item.getRequestId() == null) ir = null;
+        else ir = itemRequestRepository.findById(item.getRequestId()).orElse(null);
+        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(item, ir)));
     }
 
     @Override
@@ -78,7 +86,7 @@ public class ItemServiceJpa implements ItemService {
         if (item.getName() == null) item.setName(savedItem.getName());
         if (item.getDescription() == null) item.setDescription(savedItem.getDescription());
 
-        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(item)));
+        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(item, null)));
     }
 
     @Override

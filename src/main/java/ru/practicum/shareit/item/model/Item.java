@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import ru.practicum.shareit.request.ItemRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -41,4 +42,8 @@ public class Item {
     @NotNull
     @Column(name = "owner_id", nullable = false)
     private long owner;
+
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
 }

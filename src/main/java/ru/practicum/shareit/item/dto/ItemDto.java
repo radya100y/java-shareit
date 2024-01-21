@@ -35,4 +35,6 @@ public class ItemDto {
     private BookingSmall nextBooking;
 
     private List<CommentResponse> comments;
+
+    private Long requestId;
 }
