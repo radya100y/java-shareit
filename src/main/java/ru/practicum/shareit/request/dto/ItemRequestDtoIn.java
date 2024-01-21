@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -19,4 +20,6 @@ public class ItemRequestDtoIn {
     @NotBlank
     @Size(max = 1024)
     private String description;
+
+    private LocalDateTime created = LocalDateTime.now();
 }

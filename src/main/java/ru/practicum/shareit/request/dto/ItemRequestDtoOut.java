@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import ru.practicum.shareit.item.model.Item;
+import lombok.experimental.SuperBuilder;
+import ru.practicum.shareit.item.dto.ItemDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @Setter
+@SuperBuilder
 public class ItemRequestDtoOut {
 
     private long id;
@@ -20,5 +22,5 @@ public class ItemRequestDtoOut {
 
     private LocalDateTime created;
 
-    private List<Item> items;
+    private List<ItemDto> items;
 }
