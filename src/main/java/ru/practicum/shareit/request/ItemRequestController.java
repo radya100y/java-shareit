@@ -2,6 +2,9 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDtoIn;
 import ru.practicum.shareit.request.dto.ItemRequestDtoOut;
@@ -35,7 +38,9 @@ public class ItemRequestController {
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDtoOut> getAllRequests(@RequestParam Long from, @RequestParam Long size) {
-        return null;
+    public List<ItemRequestDtoOut> getAllRequests(@RequestParam(defaultValue = "0")  int from,
+                                                  @RequestParam(defaultValue = "1") int size) {
+        Pageable reqPage = PageRequest.of(from, size, Sort.by("id").descending());
+        return itemRequestService.getAll(reqPage);
     }
 }
