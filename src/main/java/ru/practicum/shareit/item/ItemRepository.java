@@ -14,4 +14,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "from items as it where ((it.name ilike %?1%) or (it.description ilike %?1%)) and it.available",
             nativeQuery = true)
     List<Item> getByNameOrDescrAndAvail(String query);
+
+    List<Item> findAllByRequest_IdOrderByIdDesc(Long requestId);
 }

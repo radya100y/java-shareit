@@ -1,5 +1,7 @@
 package ru.practicum.shareit.request;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDtoIn;
 import ru.practicum.shareit.request.dto.ItemRequestDtoOut;
@@ -9,22 +11,27 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/requests")
+@RequiredArgsConstructor
 public class ItemRequestController {
+
+    @Autowired
+    private final ItemRequestService itemRequestService;
 
     @PostMapping()
     public ItemRequestDtoOut save(@Valid @RequestBody ItemRequestDtoIn itemRequestDtoIn,
                                   @RequestHeader("X-Sharer-User-Id") long userId) {
-        return null;
+        itemRequestDtoIn.setUserId(userId);
+        return itemRequestService.save(itemRequestDtoIn);
     }
 
     @GetMapping()
     public List<ItemRequestDtoOut> getOwnRequests(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return null;
+        return itemRequestService.getAllByAuthor(userId);
     }
 
     @GetMapping("/{id}")
     public ItemRequestDtoOut getRequest(@PathVariable("id") Long id, @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return null;
+        return itemRequestService.getById(id, userId);
     }
 
     @GetMapping("/all")

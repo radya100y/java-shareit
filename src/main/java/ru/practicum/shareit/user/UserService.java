@@ -30,10 +30,15 @@ public class UserService {
         }
     }
 
+    public User getModel(Long id) {
+        return userStorage.findById(id).orElseThrow(() ->
+                new NotFoundException("Пользователь с идентификатором " + id + " не найден"));
+    }
+
     public UserDto get(Long id) {
-        Optional<User> user = userStorage.findById(id);
-        if (user.isEmpty()) throw new NotFoundException("Пользователь с идентификатором " + id + " не найден");
-        return UserMapper.toUserDto(user.get());
+//        Optional<User> user = userStorage.findById(id);
+//        if (user.isEmpty()) throw new NotFoundException("Пользователь с идентификатором " + id + " не найден");
+        return UserMapper.toUserDto(getModel(id));
     }
 
     @Transactional

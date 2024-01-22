@@ -142,4 +142,11 @@ public class ItemServiceJpa implements ItemService {
         return CommentMapper.toCommentResponseFromComment(
                 commentRepository.save(CommentMapper.toCommentFromRequest(commentRequest, item, user)));
     }
+
+    @Override
+    public List<ItemDto> getItemsForRequest(Long requestId) {
+        return itemRepository.findAllByRequest_IdOrderByIdDesc(requestId).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
+    }
 }
