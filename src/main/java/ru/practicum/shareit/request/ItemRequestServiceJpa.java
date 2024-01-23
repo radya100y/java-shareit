@@ -57,8 +57,8 @@ public class ItemRequestServiceJpa implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDtoOut> getAll(Pageable pageable) {
-        return itemRequestRepository.findAll(pageable).stream()
+    public List<ItemRequestDtoOut> getAll(Long userId, Pageable pageable) {
+        return itemRequestRepository.findAllByAuthor_IdNot(userId, pageable).stream()
                 .map(x -> ItemRequestMapper.toItemRequestOut(x, itemService.getItemsForRequest(x.getId())))
                 .collect(Collectors.toList());
     }

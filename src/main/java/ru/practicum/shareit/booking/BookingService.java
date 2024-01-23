@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -91,13 +92,13 @@ public class BookingService {
         return booking;
     }
 
-    public List<Booking> getBookingForBooker(long bookerId, BookingStatusParam state) {
+    public List<Booking> getBookingForBooker(long bookerId, BookingStatusParam state, Pageable reqPagebla) {
 
         userRepository.findById(bookerId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
         switch (state) {
             case ALL:
-                return bookingRepository.findAllByBooker_IdOrderByIdDesc(bookerId);
+                return bookingRepository.findAllByBooker_Id(bookerId, reqPagebla);
             case CURRENT:
                 return bookingRepository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByIdAsc(bookerId,
                         LocalDateTime.now(), LocalDateTime.now());
@@ -116,13 +117,13 @@ public class BookingService {
         }
     }
 
-    public List<Booking> getBookingForOwner(long ownerId, BookingStatusParam state) {
+    public List<Booking> getBookingForOwner(long ownerId, BookingStatusParam state, Pageable reqPageble) {
 
         userRepository.findById(ownerId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
         switch (state) {
             case ALL:
-                return bookingRepository.findAllByItemOwnerOrderByIdDesc(ownerId);
+                return bookingRepository.findAllByItemOwner(ownerId, reqPageble);
             case CURRENT:
                 return bookingRepository.findAllByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByIdDesc(
                         ownerId, LocalDateTime.now(), LocalDateTime.now());

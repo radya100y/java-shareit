@@ -14,5 +14,5 @@ public interface ItemRequestService {
 
     ItemRequestDtoOut getById(Long itemRequestId, Long userId);
 
-    List<ItemRequestDtoOut> getAll(Pageable pageable);
+    List<ItemRequestDtoOut> getAll(Long userId, Pageable pageable);
 }
