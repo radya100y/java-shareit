@@ -15,7 +15,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.UserService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ public class ItemServiceJpa implements ItemService {
     private final ItemRepository itemRepository;
 
     @Autowired
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
     private final BookingRepository bookingRepository;
@@ -45,8 +45,7 @@ public class ItemServiceJpa implements ItemService {
     @Override
     @Transactional
     public ItemDto save(ItemDto item, long userId) {
-        userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException("Пользователь с идентификатором " + userId + " не найден"));
+        userService.get(userId);
         ItemRequest ir;
         if (item.getRequestId() == null) ir = null;
         else ir = itemRequestRepository.findById(item.getRequestId()).orElse(null);
@@ -75,8 +74,7 @@ public class ItemServiceJpa implements ItemService {
     @Override
     @Transactional
     public ItemDto update(ItemDto item, long userId) {
-        if (userRepository.findById(userId).isEmpty())
-            throw new NotFoundException("Пользователь с идентификатором " + userId + " не найден");
+        userService.get(userId);
         if (item.getOwner() != userId)
             throw new AccessException("Пользователь " + userId + " не владелец вещи " + item.getId());
 
@@ -91,8 +89,7 @@ public class ItemServiceJpa implements ItemService {
     @Override
     @Transactional
     public void delete(long id, long userId) {
-        if (userRepository.findById(userId).isEmpty())
-            throw new NotFoundException("Пользователь с идентификатором " + userId + " не найден");
+        userService.get(userId);
         if (get(id, userId).getOwner() != userId)
             throw new AccessException("Пользователь " + userId + " не владелец вещи " + id);
         itemRepository.deleteById(id);
@@ -130,8 +127,7 @@ public class ItemServiceJpa implements ItemService {
         Item item = itemRepository.findById(commentRequest.getItemId()).orElseThrow(() ->
                 new NotFoundException("Вещь с идентификатором " + commentRequest.getItemId() + " не найдена"));
 
-        User user = userRepository.findById(commentRequest.getUserId()).orElseThrow(() ->
-                new NotFoundException("Пользователь с идентификатором " + commentRequest.getUserId() + " не найден"));
+        User user = userService.getModel(commentRequest.getUserId());
 
         List<Booking> bookings = bookingRepository.findAllByItem_IdAndBooker_IdAndStatusAndEndIsBefore(
                 commentRequest.getItemId(), commentRequest.getUserId(), BookingStatus.APPROVED, LocalDateTime.now());
