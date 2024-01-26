@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.AccessException;
@@ -18,7 +18,6 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,7 @@ public class ItemServiceJpa implements ItemService {
     private final UserService userService;
 
     @Autowired
-    private final BookingRepository bookingRepository;
+    private final BookingService bookingService;
 
     @Autowired
     private final CommentRepository commentRepository;
@@ -57,10 +56,9 @@ public class ItemServiceJpa implements ItemService {
         ItemDto itemDto = ItemMapper.toItemDto(itemRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Вещь с идентификатором " + id + " не найдена")));
         if (itemDto.getOwner() == userId) {
-            Booking lastBooking = bookingRepository.findByItem_IdAndStartIsBeforeOrderByEndDesc(
-                    id, LocalDateTime.now()).stream().findFirst().orElse(null);
-            Booking nextBooking = bookingRepository.findByItem_IdAndStartIsAfterAndStatusOrderByStartAsc(
-                    id, LocalDateTime.now(), BookingStatus.APPROVED).stream().findFirst().orElse(null);
+            Booking lastBooking = bookingService.getBookingByItemOld(id).stream().findFirst().orElse(null);
+            Booking nextBooking = bookingService.getBookingByItemNew(id, BookingStatus.APPROVED).stream()
+                    .findFirst().orElse(null);
             if (lastBooking != null) itemDto.setLastBooking(ItemMapper.toBookingSmall(lastBooking));
             if (nextBooking != null) itemDto.setNextBooking(ItemMapper.toBookingSmall(nextBooking));
         }
@@ -100,11 +98,10 @@ public class ItemServiceJpa implements ItemService {
         return itemRepository.findAllByOwner(userId).stream()
                 .map(ItemMapper::toItemDto)
                 .map(x -> {
-                    Booking lastBooking = bookingRepository.findByItem_IdAndStartIsBeforeOrderByEndDesc(
-                            x.getId(), LocalDateTime.now()).stream().findFirst().orElse(null);
-                    Booking nextBooking = bookingRepository.findByItem_IdAndStartIsAfterAndStatusOrderByStartAsc(
-                            x.getId(), LocalDateTime.now(), BookingStatus.APPROVED)
-                                .stream().findFirst().orElse(null);
+                    Booking lastBooking = bookingService.getBookingByItemOld(x.getId()).stream()
+                            .findFirst().orElse(null);
+                    Booking nextBooking = bookingService.getBookingByItemNew(x.getId(), BookingStatus.APPROVED).stream()
+                            .findFirst().orElse(null);
                     if (lastBooking != null) x.setLastBooking(ItemMapper.toBookingSmall(lastBooking));
                     if (nextBooking != null) x.setNextBooking(ItemMapper.toBookingSmall(nextBooking));
                     return x;
@@ -129,8 +126,8 @@ public class ItemServiceJpa implements ItemService {
 
         User user = userService.getModel(commentRequest.getUserId());
 
-        List<Booking> bookings = bookingRepository.findAllByItem_IdAndBooker_IdAndStatusAndEndIsBefore(
-                commentRequest.getItemId(), commentRequest.getUserId(), BookingStatus.APPROVED, LocalDateTime.now());
+        List<Booking> bookings = bookingService.getBookingByItemUserStatusOld(commentRequest.getItemId(),
+                commentRequest.getUserId());
         if (bookings.isEmpty())
             throw new ValidateException("У пользователя с идентификатором " +
                 commentRequest.getUserId() + " не найдено ни одного завершенного бронирования");

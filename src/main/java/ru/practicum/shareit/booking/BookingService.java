@@ -142,4 +142,18 @@ public class BookingService {
         }
     }
 
+    public List<Booking> getBookingByItemOld(long itemId) {
+        return bookingRepository.findByItem_IdAndStartIsBeforeOrderByEndDesc(itemId, LocalDateTime.now());
+    }
+
+    public List<Booking> getBookingByItemNew(long itemId, BookingStatus status) {
+        return bookingRepository.findByItem_IdAndStartIsAfterAndStatusOrderByStartAsc(itemId, LocalDateTime.now(),
+                status);
+    }
+
+    public List<Booking> getBookingByItemUserStatusOld(long itemId, long userId) {
+        return bookingRepository.findAllByItem_IdAndBooker_IdAndStatusAndEndIsBefore(itemId, userId,
+                BookingStatus.APPROVED, LocalDateTime.now());
+    }
+
 }
