@@ -28,6 +28,7 @@ public class ItemRequestServiceJpa implements ItemRequestService {
     @Autowired
     private final ItemService itemService;
 
+
     @Override
     @Transactional
     public ItemRequestDtoOut save(ItemRequestDtoIn ir) {
