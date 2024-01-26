@@ -49,11 +49,16 @@ public class ItemRequestServiceJpa implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDtoOut getById(Long itemRequestId, Long userId) {
+    public ItemRequest getModelById(Long itemRequestId, Long userId) {
         userService.get(userId);
 
-        ItemRequest ir = itemRequestRepository.findById(itemRequestId).orElseThrow(() ->
+        return itemRequestRepository.findById(itemRequestId).orElseThrow(() ->
                 new NotFoundException("Запрос с идентификатором " + itemRequestId + " не найден"));
+    }
+
+    @Override
+    public ItemRequestDtoOut getById(Long itemRequestId, Long userId) {
+        ItemRequest ir = getModelById(itemRequestId, userId);
         return ItemRequestMapper.toItemRequestOut(ir, itemService.getItemsForRequest(ir.getId()));
     }
 

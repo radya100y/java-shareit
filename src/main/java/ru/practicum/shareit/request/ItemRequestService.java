@@ -15,4 +15,6 @@ public interface ItemRequestService {
     ItemRequestDtoOut getById(Long itemRequestId, Long userId);
 
     List<ItemRequestDtoOut> getAll(Long userId, Pageable pageable);
+
+    ItemRequest getModelById(Long itemRequestId, Long userId);
 }
