@@ -34,7 +34,7 @@ public class ItemControllerTest {
 
     private final ItemDto itemIn = ItemDto.builder().name("qwe").description("qwe").available(true).owner(1L).build();
 
-    private final ItemDto itemOut =ItemDto.builder().name("qwe").description("qwe").available(true).owner(1L).build();
+    private final ItemDto itemOut = ItemDto.builder().name("qwe").description("qwe").available(true).owner(1L).build();
 
     @Test
     void shouldSave() throws Exception {

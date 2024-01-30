@@ -95,7 +95,7 @@ public class ItemServiceTest {
 
     @Test
     @DisplayName("Удаление вещи")
-    void shouldDelete(){
+    void shouldDelete() {
         when(userService.get(anyLong())).thenReturn(userDto);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
 
