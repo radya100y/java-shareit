@@ -81,7 +81,7 @@ public class ItemServiceJpa implements ItemService {
         if (item.getName() == null) item.setName(savedItem.getName());
         if (item.getDescription() == null) item.setDescription(savedItem.getDescription());
 
-        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(item, null)));
+        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(item, null)));//Вот это косяк запросом
     }
 
     @Override

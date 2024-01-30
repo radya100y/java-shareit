@@ -22,4 +22,9 @@ public class ItemRequestDtoIn {
     private String description;
 
     private LocalDateTime created = LocalDateTime.now();
+
+    public ItemRequestDtoIn(Long userId, String description) {
+        this.userId = userId;
+        this.description = description;
+    }
 }
