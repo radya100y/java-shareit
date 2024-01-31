@@ -26,16 +26,19 @@ public class ItemIntegrityTest {
 
     @Test
     void getAllSaved() {
-        UserDto user = UserDto.builder().email("qwe@qwe.qwe").name("qwe").build();
-        ItemDto item1 = ItemDto.builder().name("qwe").description("qwe").available(true).owner(1L).build();
-        ItemDto item2 = ItemDto.builder().name("wer").description("wer").available(true).owner(1L).build();
+        UserDto user = UserDto.builder().email("rty@rty.rty").name("rty").build();
+        UserDto savedUser = userService.save(user);
 
-        userService.save(user);
-        service.save(item1, 1L);
-        service.save(item2, 1L);
+        ItemDto item1 = ItemDto.builder().name("qwe").description("qwe").available(true).owner(savedUser.getId())
+                .build();
+        service.save(item1, savedUser.getId());
+
+        ItemDto item2 = ItemDto.builder().name("wer").description("wer").available(true).owner(savedUser.getId())
+                .build();
+        service.save(item2, savedUser.getId());
 
         TypedQuery<Item> query = em.createQuery("select i from Item i where owner = :userId", Item.class);
-        List<Item> items = query.setParameter("userId", 1L).getResultList();
+        List<Item> items = query.setParameter("userId", savedUser.getId()).getResultList();
 
         Assertions.assertEquals(items.size(), 2);
         Assertions.assertEquals(items.get(0).getAvailable(), true);

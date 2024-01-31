@@ -27,7 +27,7 @@ public class RequestIntegrityTest {
     @Test
     void save() {
 
-        UserDto user = UserDto.builder().email("qwe@qwe.qwe").name("qwe").build();
+        UserDto user = UserDto.builder().email("ert@ert.ert").name("ert").build();
         UserDto saveUser = userService.save(user);
 
         ItemRequestDtoIn irIn = new ItemRequestDtoIn(saveUser.getId(), "qwe");
