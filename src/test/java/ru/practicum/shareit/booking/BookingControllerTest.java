@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,6 +48,7 @@ public class BookingControllerTest {
             .end(LocalDateTime.now().plus(100, ChronoUnit.HOURS)).build();
 
     @Test
+    @DisplayName("добавление брони")
     void shouldSave() throws Exception {
         when(service.save(any(BookingDto.class))).thenReturn(BookingMapper.toBooking(bookingIn, item, booker));
 
@@ -61,6 +63,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("получение брони")
     void shouldGet() throws Exception {
         when(service.getCertain(anyLong(), anyLong())).thenReturn(BookingMapper.toBooking(bookingIn, item, booker));
 
@@ -74,6 +77,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("обновление брони")
     void shouldUpdate() throws Exception {
         bookingIn.setStatus(BookingStatus.APPROVED);
         when(service.update(anyLong(), anyLong(), any(BookingStatus.class)))
@@ -90,6 +94,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("получение бронирований броневиком )")
     void shouldGetForBooker() throws Exception {
         when(service.getBookingForBooker(anyLong(), any(BookingStatusParam.class), any(Pageable.class)))
                 .thenReturn(List.of(BookingMapper.toBooking(bookingIn, item, booker)));
@@ -103,6 +108,7 @@ public class BookingControllerTest {
     }
 
     @Test
+    @DisplayName("получение бронирований владельцем")
     void shouldGetForOwner() throws Exception {
         when(service.getBookingForOwner(anyLong(), any(BookingStatusParam.class), any(Pageable.class)))
                 .thenReturn(List.of(BookingMapper.toBooking(bookingIn, item, booker)));
