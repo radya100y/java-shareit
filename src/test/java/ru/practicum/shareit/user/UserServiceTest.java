@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.practicum.shareit.error.AlreadyExistException;
+import ru.practicum.shareit.error.ErrorResponse;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -68,5 +70,7 @@ public class UserServiceTest {
         Assertions.assertEquals(userService.update(userIn).getName(), "ert");
         userIn.setId(2L);
         Assertions.assertThrows(NotFoundException.class, () -> userService. update(userIn));
+        Assertions.assertThrows(AlreadyExistException.class, () -> {throw new AlreadyExistException("qwe");});
+        Assertions.assertEquals(new ErrorResponse("qwe").getError(), "qwe");
     }
 }
