@@ -70,7 +70,9 @@ public class UserServiceTest {
         Assertions.assertEquals(userService.update(userIn).getName(), "ert");
         userIn.setId(2L);
         Assertions.assertThrows(NotFoundException.class, () -> userService. update(userIn));
-        Assertions.assertThrows(AlreadyExistException.class, () -> {throw new AlreadyExistException("qwe");});
+        Assertions.assertThrows(AlreadyExistException.class, () -> {
+            throw new AlreadyExistException("qwe");
+        });
         Assertions.assertEquals(new ErrorResponse("qwe").getError(), "qwe");
     }
 }
