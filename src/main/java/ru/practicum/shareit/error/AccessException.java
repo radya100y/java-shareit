@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class AccessException extends RuntimeException {
 
-    private String message;
+    private final String message;
 
     public AccessException(String message) {
         super(message);

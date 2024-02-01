@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class ValidateException extends RuntimeException {
 
-    private String message;
+    private final String message;
 
     public ValidateException(String message) {
         super(message);
