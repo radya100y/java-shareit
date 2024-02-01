@@ -1,6 +1,5 @@
 package ru.practicum.shareit.request.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -9,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-//@AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
 @Setter
