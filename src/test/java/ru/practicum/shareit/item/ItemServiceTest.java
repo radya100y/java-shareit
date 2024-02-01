@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import com.mysema.commons.lang.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +10,6 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.AccessException;
 import ru.practicum.shareit.error.NotFoundException;
-import ru.practicum.shareit.error.ValidateException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -47,7 +45,7 @@ public class ItemServiceTest {
     private final ItemDto itemDto = ItemDto.builder().id(1L).name("wer").description("wer").available(false).owner(1L)
             .build();
     private final CommentRequest commentIn = new CommentRequest(1L, 1L, "qwe");
-    private final CommentResponse commentOut = new CommentResponse(1l, "qwe", "qwe",
+    private final CommentResponse commentOut = new CommentResponse(1L, "qwe", "qwe",
             LocalDateTime.now());
     private final Comment comment = new Comment(1L, item, user, "qwe", LocalDateTime.now());
 
@@ -119,7 +117,7 @@ public class ItemServiceTest {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
 
         Assertions.assertThrows(AccessException.class, () -> itemService.delete(1L, 2L));
-        Assertions.assertDoesNotThrow(() ->itemService.delete(1L, 1L));
+        Assertions.assertDoesNotThrow(() -> itemService.delete(1L, 1L));
     }
 
     @Test
@@ -143,10 +141,6 @@ public class ItemServiceTest {
         Assertions.assertThrows(NotFoundException.class, () -> itemService.addComment(commentIn));
 
         commentIn.setItemId(1L);
-        commentIn.setUserId(2L);
-//        Assertions.assertThrows(ValidateException.class, () -> itemService.addComment(commentIn));
-
-        commentIn.setUserId(1L);
         Assertions.assertEquals(itemService.addComment(commentIn).getText(), "qwe");
     }
 
