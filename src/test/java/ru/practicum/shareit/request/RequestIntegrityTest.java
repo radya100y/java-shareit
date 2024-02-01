@@ -2,6 +2,7 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,7 @@ public class RequestIntegrityTest {
 
 
     @Test
+    @DisplayName("Интеграционный тест запросов")
     void save() {
 
         UserDto user = UserDto.builder().email("ert@ert.ert").name("ert").build();

@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,7 @@ public class ItemIntegrityTest {
     private final EntityManager em;
 
     @Test
+    @DisplayName("Интеграционный тест вещей")
     void getAllSaved() {
         UserDto user = UserDto.builder().email("rty@rty.rty").name("rty").build();
         UserDto savedUser = userService.save(user);
