@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @SuperBuilder
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Getter
 public class CommentResponse {
 

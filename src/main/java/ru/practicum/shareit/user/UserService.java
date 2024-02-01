@@ -40,7 +40,8 @@ public class UserService {
 
     @Transactional
     public UserDto update(UserDto user) {
-        UserDto savedUser = get(user.getId());
+        UserDto savedUser = UserMapper.toUserDto(userStorage.findById(user.getId()).orElseThrow(() ->
+                new NotFoundException("Пользователь с идентификатором " + user.getId() + " не найден")));
         if (user.getEmail() == null) user.setEmail(savedUser.getEmail());
         if (user.getName() == null) user.setName(savedUser.getName());
         try {
