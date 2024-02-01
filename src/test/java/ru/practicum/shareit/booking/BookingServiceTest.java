@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.AccessException;
 import ru.practicum.shareit.error.ValidateException;
@@ -15,6 +16,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -168,6 +171,18 @@ public class BookingServiceTest {
         Assertions.assertEquals(bookingService.getBookingForOwner(1L, BookingStatusParam.REJECTED,
                 Pageable.ofSize(10)).size(), 1);
 
+    }
+
+
+    @Test
+    @DisplayName("Фиктивный тест на маппер")
+    void test_cannot_instantiate() {
+        Assertions.assertThrows(InvocationTargetException.class, () -> {
+            var constructor = BookingMapper.class.getDeclaredConstructor();
+            Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+            constructor.setAccessible(true);
+            constructor.newInstance();
+        });
     }
 
 

@@ -9,9 +9,12 @@ import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -96,4 +99,14 @@ public class RequestServiceTest {
         Assertions.assertNotNull(result);
     }
 
+    @Test
+    @DisplayName("Фиктивный тест на маппер")
+    void test_cannot_instantiate() {
+        Assertions.assertThrows(InvocationTargetException.class, () -> {
+            var constructor = ItemRequestMapper.class.getDeclaredConstructor();
+            Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+            constructor.setAccessible(true);
+            constructor.newInstance();
+        });
+    }
 }

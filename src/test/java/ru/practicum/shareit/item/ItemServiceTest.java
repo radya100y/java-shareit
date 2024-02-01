@@ -19,6 +19,8 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -150,5 +152,16 @@ public class ItemServiceTest {
         when(itemRepository.findAllByOwner(anyLong())).thenReturn(List.of(item));
 
         Assertions.assertEquals(itemService.getAll(1L).get(0).getDescription(), item.getDescription());
+    }
+
+    @Test
+    @DisplayName("Фиктивный тест на маппер")
+    void test_cannot_instantiate() {
+        Assertions.assertThrows(InvocationTargetException.class, () -> {
+            var constructor = ItemMapper.class.getDeclaredConstructor();
+            Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+            constructor.setAccessible(true);
+            constructor.newInstance();
+        });
     }
 }

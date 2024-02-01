@@ -9,7 +9,10 @@ import ru.practicum.shareit.error.AlreadyExistException;
 import ru.practicum.shareit.error.ErrorResponse;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,5 +77,16 @@ public class UserServiceTest {
             throw new AlreadyExistException("qwe");
         });
         Assertions.assertEquals(new ErrorResponse("qwe").getError(), "qwe");
+    }
+
+    @Test
+    @DisplayName("Фиктивный тест на маппер")
+    void test_cannot_instantiate() {
+        Assertions.assertThrows(InvocationTargetException.class, () -> {
+            var constructor = UserMapper.class.getDeclaredConstructor();
+            Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+            constructor.setAccessible(true);
+            constructor.newInstance();
+        });
     }
 }
