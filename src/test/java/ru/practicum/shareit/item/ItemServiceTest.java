@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import com.mysema.commons.lang.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,8 +10,12 @@ import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.AccessException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.error.NotFoundException;
+import ru.practicum.shareit.error.ValidateException;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
@@ -36,17 +41,15 @@ public class ItemServiceTest {
 
     private ItemService itemService;
 
-    UserDto userDto = UserDto.builder().id(1L).email("qwe@qwe.qwe").name("qwe").build();
-    User user = User.builder().id(1L).email("qwe@qwe.qwe").name("qwe").build();
-    Item item = Item.builder()
-            .id(1L)
-            .name("qwe")
-            .description("qwe")
-            .available(true)
-            .owner(1L)
+    private final UserDto userDto = UserDto.builder().id(1L).email("qwe@qwe.qwe").name("qwe").build();
+    private final User user = User.builder().id(1L).email("qwe@qwe.qwe").name("qwe").build();
+    private final Item item = Item.builder().id(1L).name("qwe").description("qwe").available(true).owner(1L).build();
+    private final ItemDto itemDto = ItemDto.builder().id(1L).name("wer").description("wer").available(false).owner(1L)
             .build();
-
-    ItemDto itemDto = ItemDto.builder().id(1L).name("wer").description("wer").available(false).build();
+    private final CommentRequest commentIn = new CommentRequest(1L, 1L, "qwe");
+    private final CommentResponse commentOut = new CommentResponse(1l, "qwe", "qwe",
+            LocalDateTime.now());
+    private final Comment comment = new Comment(1L, item, user, "qwe", LocalDateTime.now());
 
     @BeforeEach
     void setUp() {
@@ -61,9 +64,21 @@ public class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("Возвращаем вещь")
+    @DisplayName("Добавить новую вещь")
+    void shouldSave() {
+        itemDto.setRequestId(1L);
+        when(itemRequestRepository.findById(anyLong())).thenReturn(
+                Optional.of(new ItemRequest(1L, user, "qwe", LocalDateTime.now())));
+        when(itemRepository.save(any(Item.class))).thenReturn(ItemMapper.toItem(
+                itemDto, new ItemRequest(1L, user, "qwe", LocalDateTime.now())));
+
+        Assertions.assertEquals(itemService.save(itemDto, 1L).getRequestId(), 1L);
+    }
+
+    @Test
+    @DisplayName("Получить вещь")
     void shouldGet() {
-        when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
+        when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
         when(bookingService.getBookingByItemOld(anyLong()))
                 .thenReturn(List.of(Booking.builder()
                         .id(1L).item(item).start(LocalDateTime.parse("2024-01-01T00:00:00"))
@@ -79,6 +94,8 @@ public class ItemServiceTest {
         Assertions.assertEquals(itemService.get(1L, 1L).getOwner(), 1L);
 
         Assertions.assertEquals(itemService.get(1L, 1L).getLastBooking().getId(), 1L);
+
+        Assertions.assertThrows(NotFoundException.class, () -> itemService.get(2L, 1L));
     }
 
     @Test
@@ -87,8 +104,10 @@ public class ItemServiceTest {
         when(userService.get(anyLong())).thenReturn(userDto);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         Item updItem = item;
-        updItem.setDescription("wer");
+        updItem.setDescription(null);
         when(itemRepository.save(any(Item.class))).thenReturn(updItem);
+
+        Assertions.assertNull(itemService.update(itemDto, 1L).getDescription());
 
         Assertions.assertThrows(AccessException.class, () -> itemService.update(itemDto, 2L));
     }
@@ -100,5 +119,42 @@ public class ItemServiceTest {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
 
         Assertions.assertThrows(AccessException.class, () -> itemService.delete(1L, 2L));
+        Assertions.assertDoesNotThrow(() ->itemService.delete(1L, 1L));
+    }
+
+    @Test
+    @DisplayName("Поиск вещи")
+    void shouldSearch() {
+        when(itemRepository.getByNameOrDescrAndAvail("qwe")).thenReturn(List.of(item));
+        when(itemRepository.getByNameOrDescrAndAvail("")).thenReturn(List.of());
+
+        Assertions.assertEquals(itemService.search("qwe").get(0).getId(), 1L);
+        Assertions.assertEquals(itemService.search("").size(), 0);
+    }
+
+    @Test
+    @DisplayName("Комментарий после аренды")
+    void shouldComment() {
+        when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
+        when(bookingService.getBookingByItemUserStatusOld(anyLong(), anyLong())).thenReturn(List.of(new Booking()));
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
+
+        commentIn.setItemId(2L);
+        Assertions.assertThrows(NotFoundException.class, () -> itemService.addComment(commentIn));
+
+        commentIn.setItemId(1L);
+        commentIn.setUserId(2L);
+//        Assertions.assertThrows(ValidateException.class, () -> itemService.addComment(commentIn));
+
+        commentIn.setUserId(1L);
+        Assertions.assertEquals(itemService.addComment(commentIn).getText(), "qwe");
+    }
+
+    @Test
+    @DisplayName("Вывести все вещи")
+    void shouldGetAll() {
+        when(itemRepository.findAllByOwner(anyLong())).thenReturn(List.of(item));
+
+        Assertions.assertEquals(itemService.getAll(1L).get(0).getDescription(), item.getDescription());
     }
 }
