@@ -8,6 +8,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import ru.practicum.shareit.error.AccessException;
+import ru.practicum.shareit.error.AlreadyExistException;
+import ru.practicum.shareit.error.ValidateException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
@@ -61,6 +65,15 @@ public class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email", is(userIn.getEmail())));
+
+        userIn.setEmail("");
+
+        mvc.perform(post("/users")
+                        .content(mapper.writeValueAsString(userIn))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -98,5 +111,36 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Проверка ошибок")
+    void showError() throws Exception {
+        when(service.save(any(UserDto.class))).thenThrow(new AlreadyExistException("qwe"));
+
+        mvc.perform(post("/users")
+                        .content(mapper.writeValueAsString(userIn))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict());
+
+        when(service.save(any(UserDto.class))).thenThrow(new AccessException("qwe"));
+
+        mvc.perform(post("/users")
+                        .content(mapper.writeValueAsString(userIn))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+        when(service.save(any(UserDto.class))).thenThrow(new ValidateException("qwe"));
+
+        mvc.perform(post("/users")
+                        .content(mapper.writeValueAsString(userIn))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
