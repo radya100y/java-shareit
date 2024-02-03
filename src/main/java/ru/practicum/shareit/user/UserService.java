@@ -11,7 +11,6 @@ import ru.practicum.shareit.user.dto.UserMapper;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,15 +29,19 @@ public class UserService {
         }
     }
 
+    public User getModel(Long id) {
+        return userStorage.findById(id).orElseThrow(() ->
+                new NotFoundException("Пользователь с идентификатором " + id + " не найден"));
+    }
+
     public UserDto get(Long id) {
-        Optional<User> user = userStorage.findById(id);
-        if (user.isEmpty()) throw new NotFoundException("Пользователь с идентификатором " + id + " не найден");
-        return UserMapper.toUserDto(user.get());
+        return UserMapper.toUserDto(getModel(id));
     }
 
     @Transactional
     public UserDto update(UserDto user) {
-        UserDto savedUser = get(user.getId());
+        UserDto savedUser = UserMapper.toUserDto(userStorage.findById(user.getId()).orElseThrow(() ->
+                new NotFoundException("Пользователь с идентификатором " + user.getId() + " не найден")));
         if (user.getEmail() == null) user.setEmail(savedUser.getEmail());
         if (user.getName() == null) user.setName(savedUser.getName());
         try {

@@ -1,7 +1,8 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -9,8 +10,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Data
 @SuperBuilder
+@Getter
+@Setter
 @RequiredArgsConstructor
 @Entity
 @Table(name = "users", schema = "public")

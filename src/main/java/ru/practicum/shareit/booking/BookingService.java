@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
+
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -91,13 +93,13 @@ public class BookingService {
         return booking;
     }
 
-    public List<Booking> getBookingForBooker(long bookerId, BookingStatusParam state) {
+    public List<Booking> getBookingForBooker(long bookerId, BookingStatusParam state, Pageable reqPagebla) {
 
         userRepository.findById(bookerId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
         switch (state) {
             case ALL:
-                return bookingRepository.findAllByBooker_IdOrderByIdDesc(bookerId);
+                return bookingRepository.findAllByBooker_Id(bookerId, reqPagebla);
             case CURRENT:
                 return bookingRepository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByIdAsc(bookerId,
                         LocalDateTime.now(), LocalDateTime.now());
@@ -116,13 +118,13 @@ public class BookingService {
         }
     }
 
-    public List<Booking> getBookingForOwner(long ownerId, BookingStatusParam state) {
+    public List<Booking> getBookingForOwner(long ownerId, BookingStatusParam state, Pageable reqPageble) {
 
         userRepository.findById(ownerId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
         switch (state) {
             case ALL:
-                return bookingRepository.findAllByItemOwnerOrderByIdDesc(ownerId);
+                return bookingRepository.findAllByItemOwner(ownerId, reqPageble);
             case CURRENT:
                 return bookingRepository.findAllByItemOwnerAndStartIsBeforeAndEndIsAfterOrderByIdDesc(
                         ownerId, LocalDateTime.now(), LocalDateTime.now());
@@ -139,6 +141,20 @@ public class BookingService {
             default:
                 throw new NotFoundException("Такого статуса нет");
         }
+    }
+
+    public List<Booking> getBookingByItemOld(long itemId) {
+        return bookingRepository.findByItem_IdAndStartIsBeforeOrderByEndDesc(itemId, LocalDateTime.now());
+    }
+
+    public List<Booking> getBookingByItemNew(long itemId, BookingStatus status) {
+        return bookingRepository.findByItem_IdAndStartIsAfterAndStatusOrderByStartAsc(itemId, LocalDateTime.now(),
+                status);
+    }
+
+    public List<Booking> getBookingByItemUserStatusOld(long itemId, long userId) {
+        return bookingRepository.findAllByItem_IdAndBooker_IdAndStatusAndEndIsBefore(itemId, userId,
+                BookingStatus.APPROVED, LocalDateTime.now());
     }
 
 }

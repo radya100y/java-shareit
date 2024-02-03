@@ -29,13 +29,4 @@ public class BookingMapper {
                 .booker(booker)
                 .build();
     }
-
-    public static BookingWithoutDates toBookingWithoutDates(Booking booking) {
-        return BookingWithoutDates.builder()
-                .id(booking.getId())
-                .status(booking.getStatus())
-                .item(booking.getItem())
-                .booker(booking.getBooker())
-                .build();
-    }
 }
