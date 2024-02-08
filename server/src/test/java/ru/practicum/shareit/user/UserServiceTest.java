@@ -45,6 +45,7 @@ public class UserServiceTest {
     void shouldGetModel() {
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
 
+        assert user != null;
         Assertions.assertEquals(userService.getModel(1L).getEmail(), user.getEmail());
         Assertions.assertThrows(NotFoundException.class, () -> userService.getModel(2L));
     }
@@ -69,6 +70,7 @@ public class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
+        assert user != null;
         user.setName("ert");
         Assertions.assertEquals(userService.update(userIn).getName(), "ert");
         userIn.setId(2L);
