@@ -3,7 +3,7 @@ services:
   gateway:
     build: .
     image: gateway_image
-#    container_name:
+    container_name: gateway_container
     ports:
       - "8080:8080"
     depends_on:
@@ -14,22 +14,28 @@ services:
   server:
     build: .
     image: server_image
-#    container_name:
+    container_name: server_container
     ports:
       - "9090:9090"
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/shareit
+      - DB_NAME=shareit
+      - DB_HOST=db
+      - DB_PORT=5432
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   db:
     image: postgres:13.7-alpine
-#    container_name:
+    container_name: pg_radya
+#    volumes:
+#      - /var/lib/postgresql/data/
     ports:
       - "6541:5432"
     environment:
-      - DB_NAME=shareit
+#      - DB_NAME=shareit
+      - POSTGRES_DB=shareit
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - DB_HOST=db
-      - DB_PORT=5432
