@@ -10,6 +10,10 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.error.AccessException;
 import ru.practicum.shareit.error.NotFoundException;
+import ru.practicum.shareit.item.dto.CommentRequest;
+import ru.practicum.shareit.item.dto.CommentResponse;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequest;
@@ -103,6 +107,7 @@ public class ItemServiceTest {
         when(userService.get(anyLong())).thenReturn(userDto);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         Item updItem = item;
+        assert updItem != null;
         updItem.setDescription(null);
         when(itemRepository.save(any(Item.class))).thenReturn(updItem);
 
