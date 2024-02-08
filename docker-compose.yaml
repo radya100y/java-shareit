@@ -20,7 +20,6 @@ services:
     depends_on:
       - db
     environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/shareit
       - DB_NAME=shareit
       - DB_HOST=db
       - DB_PORT=5432
@@ -35,7 +34,6 @@ services:
     ports:
       - "6541:5432"
     environment:
-#      - DB_NAME=shareit
       - POSTGRES_DB=shareit
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
