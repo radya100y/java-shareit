@@ -47,10 +47,11 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<Booking> getBookingsForBooker(@RequestHeader("X-Sharer-User-Id") long userId,
-                                              @RequestParam(defaultValue = "ALL") BookingStatusParam state,
-                                              @RequestParam(defaultValue = "0") @Min(0) int from,
-                                              @RequestParam(defaultValue = "20") @Min(1) int size) {
+    public List<Booking> getBookingsForBooker(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestParam(defaultValue = "ALL") BookingStatusParam state,
+            @RequestParam(defaultValue = "0") @Min(0) int from,
+            @RequestParam(defaultValue = "20") @Min(1) int size) {
         Pageable reqPage = PageRequest.of(from / size, size, Sort.by("id").descending());
         return bookingService.getBookingForBooker(userId, state, reqPage);
     }

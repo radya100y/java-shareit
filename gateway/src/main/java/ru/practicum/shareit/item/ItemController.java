@@ -17,30 +17,30 @@ public class ItemController {
     private final ItemClient itemClient;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> get(@PathVariable("id") Long id, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> get(@PathVariable("id") Long id, @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemClient.getItem(id, userId);
     }
 
     @PostMapping()
     public ResponseEntity<Object> save(@Valid @RequestBody ItemIn item,
-                                       @RequestHeader("X-Sharer-User-Id") Long userId) {
+                                       @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemClient.postItem(item, userId);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> update(@Valid @RequestBody ItemUpd item,
-                          @RequestHeader("X-Sharer-User-Id") Long userId,
-                          @PathVariable("id") Long itemId) {
+                          @RequestHeader("X-Sharer-User-Id") long userId,
+                          @PathVariable("id") long itemId) {
         return itemClient.patchItem(itemId, userId, item);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public void delete(@PathVariable("id") long itemId, @RequestHeader("X-Sharer-User-Id") long userId) {
         itemClient.deleteItem(itemId, userId);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> getAll(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemClient.getItems(userId);
     }
 
@@ -51,8 +51,8 @@ public class ItemController {
 
     @PostMapping("/{id}/comment")
     public ResponseEntity<Object> addComment(@Valid @RequestBody CommentIn comment,
-                                             @RequestHeader("X-Sharer-User-Id") Long userId,
-                                             @PathVariable("id") Long itemId) {
+                                             @RequestHeader("X-Sharer-User-Id") long userId,
+                                             @PathVariable("id") long itemId) {
         return itemClient.addComment(itemId, userId, comment);
     }
 }
