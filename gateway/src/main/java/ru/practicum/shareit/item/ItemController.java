@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.dto.ItemIn;
 import ru.practicum.shareit.item.dto.ItemUpd;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/items")
@@ -46,6 +47,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<Object> search(@RequestParam String text) {
+        if (text.isBlank()) return ResponseEntity.ok(List.of());
         return itemClient.searchItems(text);
     }
 
