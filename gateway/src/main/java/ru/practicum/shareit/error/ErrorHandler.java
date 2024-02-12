@@ -1,4 +1,4 @@
-package ru.practicum.shareit.client;
+package ru.practicum.shareit.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleBadArgumentException(final IllegalArgumentException exc) {
+    public ErrorResponse handleBadArgumentException(final StatusNotFound exc) {
         log.debug("Получен статус 400 Bad request {}", exc.getMessage(), exc);
         return new ErrorResponse(exc.getMessage());
     }
